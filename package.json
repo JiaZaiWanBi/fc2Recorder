@@ -1,0 +1,19 @@
+{
+  "name": "fc2recorder",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "node main.js"
+  },
+  "type": "module",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^1.7.3",
+    "json": "^11.0.0",
+    "qs": "^6.13.0",
+    "websocket": "^1.0.35",
+    "ws": "^8.18.0"
+  }
+}
