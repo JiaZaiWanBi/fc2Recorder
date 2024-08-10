@@ -3,10 +3,9 @@ import { FC2LiveDL } from "./FC2LiveDL.js"
 
 
 async function main(){
-
-    const room1 = new FC2LiveDL('59889342')
-
-    delay(10000)
+  const room1 = new FC2LiveDL('59889342')
+  
+  delay(10000)
 }
 
 function delay(ms) {

@@ -4,7 +4,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "test": "node main.js"
+    "main": "node main.js",
+    "test": "node test.js"
   },
   "type": "module",
   "author": "",

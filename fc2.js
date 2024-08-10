@@ -4,7 +4,7 @@ import websocket from 'ws'
 
 export class FC2WebSocket{
     heartbeat_interval = 30
-    constructor(url){
+    constructor(url,session){
         this._url = url
         this._msg_id = 0
         this._last_heartbeat = 0
@@ -13,7 +13,7 @@ export class FC2WebSocket{
         this._ws = new websocket(this._url)
         this._ws.addEventListener('message',(msg) => this._receiveMessage(msg))
         this._msg_responses = new Map();
-
+        this.session=session
     }
 
     async _try_heartbeat(){
@@ -32,7 +32,6 @@ export class FC2WebSocket{
 
     async _receiveMessage(message){
         let msg = JSON.parse(message.data)
-        //console.log(msg['name'])
         if (msg["name"] == "connect_complete"){
             this._is_ready = true
             this._main_loop()
@@ -101,6 +100,7 @@ export class FC2WebSocket{
 
     async _send_message(name,args={}){
         this._msg_id += 1
+        let _rmsgid = this._msg_id
         const msg = {name: name, arguments: args,id:this._msg_id}
         await new Promise((resolve,reject)=>{
             const check=()=>{
@@ -118,17 +118,19 @@ export class FC2WebSocket{
         }catch{
             console.log('SendError')
         }
-        return this._msg_id
+        return _rmsgid
     }
     
 
 }
 
 export class FC2LiveStream{
-    constructor(channel_id){
+    constructor(channel_id,session){
 
             this._meta = null;
+            this._cookie = null;
             this.channel_id = channel_id;
+            this.session=session
     }
 
 
@@ -142,9 +144,12 @@ export class FC2LiveStream{
             "streamid": this.channel_id,
           };
         try{
-            resp = await axios.post(url,qs.stringify(data))
+            resp = await this.session.post(url,qs.stringify(data))
         }catch(error){
+            console.log(error);
+            
         }
+        this._cookie = resp.headers['set-cookie']
         return {
             meta: resp.data["data"],
             cookie: resp.headers['set-cookie']
@@ -171,7 +176,7 @@ export class FC2LiveStream{
             "ipv6": "",
         }
         try{
-            resp = await axios.post(url,qs.stringify(data))
+            resp = await this.session.post(url,qs.stringify(data))
         }catch{
 
         }
